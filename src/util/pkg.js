@@ -43,6 +43,7 @@ export const defaultPkg =
   web          : 'dist/browser/index.min.js',
   umd          : 'dist/legacy/umd/index.umd.min.js',
   unpkg        : 'dist/browser/index.min.js',
+  jsdelivr     : 'dist/browser/index.min.js',
   module       : 'dist/esm/index.min.js',
   'jsnext:main': 'dist/esm/index.min.js',
   src          : 'src/index.js',

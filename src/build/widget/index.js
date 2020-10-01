@@ -3,8 +3,8 @@ import { pathToFileURL          } from 'url'
 import { spawnSync              } from 'child_process'
 import { configFilePath         } from '../../init/index.js'
 import { buildModern, buildUmd  } from '../index.js'
-import { getConfig              } from './config.js'
-import { dist, context, taskError, notifyDone, runTaskAndNotify, src, embedCdnUrl, fileNamePreFix } from '../../util/index.js'
+
+import { dist, context, taskError, notifyDone, runTaskAndNotify, src, embedCdnUrl, fileNamePreFix, getConfig } from '../../util/index.js'
 
 const widgetDistPath = path.resolve(dist, './widget')
 
@@ -28,7 +28,6 @@ export const testBuild = (isForkedProcess=true, WIDGET='test') => {
 }
 
 async function useCdn (WIDGET){
-
   const { browserEsmPackages } = await getConfig()
 
   const test     = (WIDGET === 'test')

@@ -1,5 +1,4 @@
 import { pathToFileURL           } from 'url'
-import { configFilePath          } from '../init/index.js'
 import { knownBrowserEsmPackages } from './known-browser-esm-packages.js'
 
 
@@ -7,6 +6,7 @@ export const config = {}
 export const getConfig = async () => {
   if(Object.keys(config).length) return config
 
+  const { configFilePath } = await import('../init/index.js')
   const rawConfig = (await import(pathToFileURL(configFilePath).href)).default
 
   const { modern, ssr, legacy, widget, testWidget, clean = true, monoRepoName, browserEsmPackages = {} } = rawConfig
