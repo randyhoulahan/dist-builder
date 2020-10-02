@@ -9,7 +9,7 @@ const desc = !description? '' :
 
 export const banner = `/* eslint-disable */
 /*!
-* ${name} ${version}
+* ${name} ${version}  published: ${new Date()}
 * ${desc}
 * @link ${homepage || readme}
 * @source ${repository}

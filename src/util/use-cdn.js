@@ -32,15 +32,15 @@ export const embedCdnUrl = (browserEsmPackages) => (fileName) => {
 }
 
 async function fixEsmChunks(){
-  const cdnUrl = 'https://unpkg.com'
-  const files  = await getJsFileObjs(dirPath)
+  const { cdnUrl } = await getConfig()
+  const   files    = await getJsFileObjs(dirPath)
 
   for (const { name, base } of files){
     if(name.includes('index') || name.includes('index')) continue
 
     if(name.includes('.min'))
-      replaceInFile(path.resolve(dirPath, './index.min.js'), `./${base}`, `${cdnUrl}/${pkgName}/dist/browser/${base}`)
+      replaceInFile(path.normalize(path.resolve(dirPath, './index.min.js'), `./${base}`, `${cdnUrl}/${pkgName}/dist/browser/${base}`))
     else(!name.includes('.min'))
-    replaceInFile(path.resolve(dirPath, './index.js'), `./${base}`, `${cdnUrl}/${pkgName}/dist/browser/${base}`)
+    replaceInFile(path.normalize(path.resolve(dirPath, './index.js'), `./${base}`, `${cdnUrl}/${pkgName}/dist/browser/${base}`))
   }
 }
