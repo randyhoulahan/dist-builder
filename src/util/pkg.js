@@ -39,13 +39,13 @@ export const defaultPkg =
   version      : '0.0.1',
   private      : false,
   license      : 'MIT',
-  main         : 'dist/esm/index.js',
+  main         : 'dist/esm/index.mjs',
   web          : 'dist/browser/index.min.js',
   umd          : 'dist/legacy/umd/index.umd.min.js',
   unpkg        : 'dist/browser/index.min.js',
   jsdelivr     : 'dist/browser/index.min.js',
-  module       : 'dist/esm/index.min.js',
-  'jsnext:main': 'dist/esm/index.min.js',
+  module       : 'dist/esm/index.min.mjs',
+  'jsnext:main': 'dist/esm/index.min.mjs',
   src          : 'src/index.js',
   files        : [
     'dist/*',
@@ -59,9 +59,9 @@ export const defaultPkg =
   exports: {
     '.': [
       {
-        import : './dist/esm/index.js',
-        require: './dist/legacy/cjs/index.common.cjs',
-        default: './dist/esm/index.js'
+        import : './dist/esm/index.mjs',
+        require: './dist/legacy/cjs/index.common.js',
+        default: './dist/esm/index.mjs'
       },
       './dist/legacy/umd/index.umd.min.js'
     ]
