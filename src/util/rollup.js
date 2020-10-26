@@ -13,7 +13,7 @@ import visualizer from 'rollup-plugin-visualizer' //https://github.com/btd/rollu
 
 import { banner                        } from './banner.js'
 import { dist, src, pub, test, context } from './context.js'
-import { fileNamePreFix, type          } from './pkg.js'
+import { fileNamePreFix, type, dependencies          } from './pkg.js'
 import { hasVue                        } from './files.js'
 import { getConfig                     } from './config.js'
 
@@ -38,7 +38,7 @@ export const rollupConfig = async () => {
 
   if(!config) throw new Error('BROWSERSLIST_ENV not set to modern or ssr')
   
-  return MINIFY? minify(config) : config
+  return MINIFY? minify(config, IS_SSR) : config
 }
 
 async function makeBuilds(){ //eslint-disable-line
@@ -54,6 +54,7 @@ async function makeBuilds(){ //eslint-disable-line
   const pluginsBrowser = [ ...plugins,  nodeResolve({ browser: true, mainFields: [ 'browser', 'module', 'main' ] }), visualizer({ filename: `stats-${IS_TEST_WIDGET?'test-widget-':''}${WIDGET?'widget-':''}browser.html`, gzipSize: true }) ]
 
   plugins.push(visualizer({ gzipSize: true }))
+  // plugins.push(nodeResolve())
   
   const output = { name: fileNamePreFix, format, banner, sourcemap }
 
@@ -65,28 +66,33 @@ async function makeBuilds(){ //eslint-disable-line
   }
 
   const esmBrowser = { context, external, input,  plugins: pluginsBrowser, output: { ...output } }
-  const esm        = { context, input, plugins, output: { ...output } }
+  const esm        = { context, external: dependencies, input, plugins, output: { ...output } }
 
   if(!modern?.output?.dir) esmBrowser.output.file = getBrowserOutputFilePath()
-  if(!ssr?.output?.dir)    esm.output.file        = resolve(dist, 'esm/index.js')
+  if(!ssr?.output?.dir)    esm.output.file        = resolve(dist, 'esm/index.mjs')
 
   if(modern?.output?.dir)  esmBrowser.output.dir            = getBrowserOutputFilePath(modern)//resolve(context, modern.output.dir)
   if(modern?.output?.dir)  esmBrowser.output.entryFileNames = 'index.js'
-  if(ssr?.output?.dir)     esm.output.dir                   = resolve(context, ssr.output.dir)
-
+  if(ssr?.output?.dir){
+    esm.output.dir = resolve(context, ssr.output.dir)
+    esm.output.entryFileNames= 'index.mjs'
+    esm.output.chunkFileNames= 'chunk-[name]-[hash]-[format].mjs'
+  }
   return { esmBrowser, esm }
 }
 
-function minify(config){
+function minify(config, isSsr){
+  const ext = isSsr? 'mjs' : 'js'
+
   config.forEach((c) => {
     c.output.output = { comments: '/^!/' }
 
     if(c.output.dir){
-      c.output.entryFileNames= 'index.min.js'
-      c.output.chunkFileNames= '[name]-[hash].min.js'
+      c.output.entryFileNames= `index.min.${ext}`
+      c.output.chunkFileNames= `chunk-[name]-[hash]-[format].min.${ext}`
     }
     
-    if(c.output.file) c.output.file = c.output.file.replace(/\.js/g, '.min.js')
+    if(c.output.file) c.output.file = c.output.file.replace(/\.(js|mjs)/g, `.min.${ext}`)
 
     c.plugins.push(terser())
   })

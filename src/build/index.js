@@ -51,7 +51,7 @@ export const buildLegacyBundle = ({ formats='umd,umd-min', dest='dist/legacy/umd
 
 function getEntry(){ return (pkg.type==='module')? 'src/index.mjs' :'src/index.js' }
 function buildEsm(){ buildRollup() }
-function buildSsr(){ buildEsm(); buildEsmMin(); pushInFile(path.resolve(dist, 'esm/index.min.js'), '/* eslint-disable */'); }
+function buildSsr(){ buildEsm(); buildEsmMin(); pushInFile(path.resolve(dist, 'esm/index.min.mjs'), '/* eslint-disable */'); }
 
 function buildEsmMin(){
   const BROWSERSLIST_ENV = 'ssr'

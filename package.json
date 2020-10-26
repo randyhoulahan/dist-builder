@@ -1,6 +1,6 @@
 {
   "name": "@houlagins/dist-builder",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "type": "module",
   "homepage": "https://github.com/randyhoulahan/dist-builder/tree/master#readme",
   "readme": "https://github.com/randyhoulahan/dist-builder/tree/master#readme",
@@ -29,9 +29,8 @@
     "clean:reinstall": "if test -f yarn.lock; then rm yarn.lock; fi && if test -d node_modules; then rm -rf node_modules; fi && yarn --exact --force"
   },
   "dependencies": {
-    "@intlify/rollup-plugin-vue-i18n": "~1.0.0",
+    "@intlify/rollup-plugin-vue-i18n": "1.0.0",
     "@intlify/vue-i18n-loader": "^1.0.0",
-    "@kazupon/vue-i18n-loader": "^0.5.0",
     "@rollup/plugin-alias": "~3.1.0",
     "@rollup/plugin-babel": "~5.2.1",
     "@rollup/plugin-commonjs": "~15.1.0",
@@ -54,15 +53,15 @@
     "ora": "~5.1.0",
     "portfinder": "~1.0.28",
     "read-pkg": "~5.2.0",
-    "rollup": "2.28.1",
-    "rollup-plugin-css-only": "~2.1.0",
-    "rollup-plugin-terser": "~7.0.2",
-    "rollup-plugin-visualizer": "~4.1.1",
-    "rollup-plugin-vue": "~5.1.9",
+    "rollup": "2.27.1",
+    "rollup-plugin-css-only": "2.1.0",
+    "rollup-plugin-terser": "7.0.2",
+    "rollup-plugin-visualizer": "4.1.1",
+    "rollup-plugin-vue": "5.1.9",
     "semver": "~7.3.2",
     "vue": "2.6.11",
     "vue-cli-plugin-i18n": "~1.0.1",
-    "vue-i18n": "^8.17.3",
+    "vue-i18n": "8.21.1",
     "vue-template-compiler": "2.6.11"
   }
 }
