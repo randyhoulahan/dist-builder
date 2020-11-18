@@ -29,7 +29,7 @@ Add init to your scripts package.json to initialize the repo.
 ```bash
 yarn run init
 ```
-
+  
 ### API
 
 #### Build
