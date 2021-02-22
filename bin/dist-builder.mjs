@@ -37,9 +37,10 @@ function forkScript(scriptPathToFork){
   const   env     = { ...process.env, DIST_BUILDER_CONTEXT: context }
   const   options = { cwd: context, env }
 
+  consola.warn('context', context)
   if(DEBUG) options.stdio = 'inherit'
 
-  const forked = fork(scriptPathToFork, [], options)
+  const forked = fork(scriptPathToFork, ['--trace-warnings'], options)
 
   initChildProcessApi(forked)
 }
