@@ -13,6 +13,7 @@ import {
   pushInFile
 } from '../util/index.js'
 
+
 //spawn options
 const   defaultOptions   = { shell: true }
 const { DEBUG          } = process.env
@@ -51,13 +52,23 @@ export const buildLegacyBundle = ({ formats='umd,umd-min', dest='dist/legacy/umd
 
 function getEntry(){ return (pkg.type==='module')? 'src/index.mjs' :'src/index.js' }
 function buildEsm(){ buildRollup() }
-function buildSsr(){ buildEsm(); buildEsmMin(); pushInFile(path.resolve(dist, 'esm/index.min.mjs'), '/* eslint-disable */'); }
+function buildEsmMjs(){ buildRollup({ FORCE_JS_EXT:true }) }
+function buildSsr(){ buildEsm(); buildEsmMin(); buildSsrMjs(); pushInFile(path.resolve(dist, `esm/index.min.js`), '/* eslint-disable */'); }
+function buildSsrMjs(){ buildEsmMjs(); buildEsmMinMjs(); }
 
 function buildEsmMin(){
   const BROWSERSLIST_ENV = 'ssr'
   const MINIFY           = true
 
   buildRollup({ BROWSERSLIST_ENV, MINIFY })
+}
+
+function buildEsmMinMjs(){
+  const BROWSERSLIST_ENV = 'ssr'
+  const MINIFY           = true
+  const FORCE_JS_EXT = true
+
+  buildRollup({ BROWSERSLIST_ENV, MINIFY, FORCE_JS_EXT })
 }
 
 function buildBrowser(WIDGET){
@@ -77,12 +88,13 @@ function rmDemo(){
   return spawnSync('rm', [ `${path.resolve(dist, './legacy/umd')}/demo.html` ], defaultOptions)
 }
 
-function buildRollup({ BROWSERSLIST_ENV='ssr', MINIFY=false, WIDGET='', DIST_BUILDER_CONTEXT=context }={}, file = 'scripts/rollup.config.mjs'){
+function buildRollup({ BROWSERSLIST_ENV='ssr', MINIFY=false, WIDGET='', FORCE_JS_EXT, DIST_BUILDER_CONTEXT=context }={}, file = 'scripts/rollup.config.mjs'){
   const env  = { ...process.env, ... { BROWSERSLIST_ENV, DIST_BUILDER_CONTEXT } }
   const args = [ `--config ${file}` ]
 
   if(MINIFY) env.MINIFY = true
   if(WIDGET) env.WIDGET = WIDGET
+  if(FORCE_JS_EXT) env.FORCE_JS_EXT = FORCE_JS_EXT
 
   const options = { ...defaultOptions, ...{ env } }
 
@@ -97,7 +109,8 @@ function cleanDist({ modern, ssr, umd, cjs  }){  // eslint-disable-line
 
   if (modern) spawnSync('mkdir', [ '-p', path.resolve(dist, 'browser') ], defaultOptions)
   if (ssr)    spawnSync('mkdir', [ '-p', path.resolve(dist, 'esm') ],     defaultOptions)
-  
+  if (ssr)    spawnSync('mkdir', [ '-p', path.resolve(dist, 'esm/mjs') ], defaultOptions)
+
   if(umd || cjs) spawnSync('mkdir', [ '-p', path.resolve(dist, './legacy') ], defaultOptions)
   if(umd)        spawnSync('mkdir', [ '-p', path.resolve(dist, './legacy/umd') ], defaultOptions)
   if(cjs)        spawnSync('mkdir', [ '-p', path.resolve(dist, './legacy/cjs') ], defaultOptions)

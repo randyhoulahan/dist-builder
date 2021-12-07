@@ -18,8 +18,9 @@ import { hasVue                        } from './files.js'
 import { getConfig                     } from './config.js'
 
 const BROWSERSLIST_ENV = process.env.BROWSERSLIST_ENV || 'legacy'
-const MINIFY           = process.env.MINIFY
+const MINIFY           = !!process.env.MINIFY
 const WIDGET           = process.env.WIDGET || ''
+const FORCE_JS_EXT     = !!process.env.FORCE_JS_EXT
 
 const IS_MODERN        = BROWSERSLIST_ENV === 'modern'
 const IS_SSR           = BROWSERSLIST_ENV === 'ssr'
@@ -41,9 +42,10 @@ export const rollupConfig = async () => {
   return MINIFY? minify(config, IS_SSR) : config
 }
 
-async function makeBuilds(){ //eslint-disable-line
+async function makeBuilds(fileExt = getFileExt()){ //eslint-disable-line
   const { modern, ssr, browserEsmPackages } = await getConfig()
   const   external      = Object.keys(browserEsmPackages) //tell resolve plugin not to bundle, they will be imported vie "import from 'url-directly'""
+
 
   // output options
   const sourcemap      = true
@@ -69,20 +71,22 @@ async function makeBuilds(){ //eslint-disable-line
   const esm        = { context, external: dependencies, input, plugins, output: { ...output } }
 
   if(!modern?.output?.dir) esmBrowser.output.file = getBrowserOutputFilePath()
-  if(!ssr?.output?.dir)    esm.output.file        = resolve(dist, 'esm/index.mjs')
+  if(!ssr?.output?.dir)    esm.output.file        = resolve(dist, `esm/index.${fileExt}`)
 
   if(modern?.output?.dir)  esmBrowser.output.dir            = getBrowserOutputFilePath(modern)//resolve(context, modern.output.dir)
-  if(modern?.output?.dir)  esmBrowser.output.entryFileNames = 'index.js'
+  if(modern?.output?.dir)  esmBrowser.output.entryFileNames = `index.${fileExt}`
   if(ssr?.output?.dir){
-    esm.output.dir = resolve(context, ssr.output.dir)
-    esm.output.entryFileNames= 'index.mjs'
-    esm.output.chunkFileNames= 'chunk-[name]-[hash]-[format].mjs'
+    const ssrDir = fileExt === 'mjs'? `${ssr.output.dir}/mjs` : ssr.output.dir
+    
+    esm.output.dir = resolve(context, ssrDir)
+    esm.output.entryFileNames= `index.${fileExt}`
+    esm.output.chunkFileNames= `chunk-[name]-[hash]-[format].${fileExt}`
   }
   return { esmBrowser, esm }
 }
 
 function minify(config, isSsr){
-  const ext = isSsr? 'mjs' : 'js'
+  const ext = isSsr?  getFileExt() : 'js'
 
   config.forEach((c) => {
     c.output.output = { comments: '/^!/' }
@@ -124,4 +128,10 @@ function getInputFilePath(){
   if(!WIDGET) return (type ==='module')? resolve(src, 'index.mjs') : resolve(src, 'index.js')
 
   return IS_TEST_WIDGET? resolve(test, 'widget.js') : resolve(src, 'widget.js')
+}
+
+function getFileExt(){
+  if(FORCE_JS_EXT) return 'mjs'
+
+  return 'js'
 }
