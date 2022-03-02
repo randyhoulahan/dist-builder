@@ -1,67 +1,58 @@
 {
-  "name": "@houlagins/dist-builder",
-  "version": "1.0.11",
+  "name": "@scbd/dist-builder",
+  "version": "0.0.2-beta",
   "type": "module",
-  "homepage": "https://github.com/randyhoulahan/dist-builder/tree/master#readme",
-  "readme": "https://github.com/randyhoulahan/dist-builder/tree/master#readme",
+  "homepage": "https://github.com/scbd/dist-builder/tree/master#readme",
+  "readme": "https://github.com/scbd/dist-builder/tree/master#readme",
   "license": "MIT",
-  "author": "Randy Houlahan",
-  "src": "src/index.mjs",
-  "main": "src/index.mjs",
-  "module": "src/index.mjs",
-  "unpkg": "src/index.mjs",
+  "author": "Secretariat of the Convention on Biological Diversity <it@cbd.int>",
+  "contributors": [
+    { "name": "Randy J. Houlahan", "email": "randy.houlahan@un.org" }
+  ],
+  "src": "src/index.js",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "unpkg": "src/index.js",
   "files": [
     "src/*",
     "bin/*"
   ],
   "bin": {
-    "dist-builder": "bin/dist-builder.mjs"
+    "dist-builder": "bin/dist-builder.js",
+    "db": "bin/dist-builder.js"
   },
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/index.js",
+    "./src/": "./src/",
+    "./bin/":     "./bin/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/randyhoulahan/dist-builder.git"
+    "url": "git+https://github.com/scbd/dist-builder.git"
   },
   "scripts": {
     "release": "yarn publish --access=public --tag latest",
     "clean:reinstall": "if test -f yarn.lock; then rm yarn.lock; fi && if test -d node_modules; then rm -rf node_modules; fi && yarn --exact --force"
   },
   "dependencies": {
-    "@intlify/rollup-plugin-vue-i18n": "1.0.0",
-    "@intlify/vue-i18n-loader": "^1.0.0",
-    "@rollup/plugin-alias": "~3.1.0",
-    "@rollup/plugin-babel": "~5.2.1",
-    "@rollup/plugin-commonjs": "~15.1.0",
-    "@rollup/plugin-json": "~4.1.0",
-    "@rollup/plugin-node-resolve": "~9.0.0",
-    "@rollup/plugin-strip": "~2.0.0",
-    "@vue/cli": "^4.5.6",
-    "@vue/cli-plugin-babel": "~4.5.6",
-    "@vue/cli-plugin-e2e-cypress": "~4.5.6",
-    "@vue/cli-plugin-eslint": "~4.5.6",
-    "@vue/cli-service": "~4.5.6",
-    "@vue/compiler-sfc": "~3.0.0",
-    "babel-eslint": "~10.1.0",
-    "change-case": "~4.1.1",
-    "consola": "~2.15.0",
-    "core-js": "~3.6.5",
-    "cross-spawn": "~7.0.3",
-    "eslint": "~7.10.0",
-    "eslint-plugin-vue": "~6.2.2",
-    "ora": "~5.1.0",
-    "portfinder": "~1.0.28",
-    "read-pkg": "~5.2.0",
-    "rollup": "2.27.1",
-    "rollup-plugin-css-only": "2.1.0",
+    "@fullhuman/postcss-purgecss": "4.1.3",
+    "@houlagins/locale": "1.0.0",
+    "@scbd/www-css": "1.0.2",
+    "@vitejs/plugin-vue": "2.2.0",
+    "change-case": "4.1.2",
+    "consola": "2.15.3",
+    "ejs": "3.1.6",
+    "es-module-shims": "1.4.5",
+    "eslint": "8.8.0",
+    "fs-extra": "10.0.0",
+    "handlebars": "4.7.7",
+    "inquirer": "8.2.0",
+    "ora": "6.0.1",
+    "read-pkg": "7.1.0",
     "rollup-plugin-terser": "7.0.2",
-    "rollup-plugin-visualizer": "4.1.1",
-    "rollup-plugin-vue": "5.1.9",
-    "semver": "~7.3.2",
-    "vue": "2.6.11",
-    "vue-cli-plugin-i18n": "~1.0.1",
-    "vue-i18n": "8.21.1",
-    "vue-template-compiler": "2.6.11"
+    "vite": "2.8.1",
+    "vue": "3.2.31",
+    "vue-i18n": "9.2.0-beta.30",
+    "write-pkg": "5.0.0"
   }
 }

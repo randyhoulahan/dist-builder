@@ -1,6 +1,27 @@
-import   fs          from 'fs'
-import   path        from 'path'
-import { dist, src } from './context.js'
+import   fs           from 'fs-extra'
+import   path         from 'path'
+import { dist, src }  from './context.js'
+
+
+export const fileExists = (filePath) => {
+  try {
+    if (fs.existsSync(filePath)) return true
+  } catch(err) {
+    return false
+  }
+}
+
+export const readFile = (fileName) => {
+  return (fs.readFileSync(fileName)).toString()
+}
+
+
+
+export const writeFile = (ctx, fileName, data) => {
+  fs.ensureFileSync(`${ctx}/${fileName}`)
+  
+  return fs.writeFileSync(`${ctx}/${fileName}`, data)
+}
 
 export const hasVue = (dirToSearch = src) => dirContainsFileWithExt('.vue', dirToSearch)
 export const hasCss = (dirToSearch = src) => dirContainsFileWithExt('.css', dirToSearch)
