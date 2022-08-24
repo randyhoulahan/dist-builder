@@ -1,13 +1,16 @@
 {
   "name": "@scbd/dist-builder",
-  "version": "0.0.2-beta",
+  "version": "0.0.3-beta",
   "type": "module",
   "homepage": "https://github.com/scbd/dist-builder/tree/master#readme",
   "readme": "https://github.com/scbd/dist-builder/tree/master#readme",
   "license": "MIT",
   "author": "Secretariat of the Convention on Biological Diversity <it@cbd.int>",
   "contributors": [
-    { "name": "Randy J. Houlahan", "email": "randy.houlahan@un.org" }
+    {
+      "name": "Randy J. Houlahan",
+      "email": "randy.houlahan@un.org"
+    }
   ],
   "src": "src/index.js",
   "main": "src/index.js",
@@ -24,7 +27,7 @@
   "exports": {
     ".": "./src/index.js",
     "./src/": "./src/",
-    "./bin/":     "./bin/"
+    "./bin/": "./bin/"
   },
   "repository": {
     "type": "git",
@@ -43,16 +46,19 @@
     "consola": "2.15.3",
     "ejs": "3.1.6",
     "es-module-shims": "1.4.5",
-    "eslint": "8.8.0",
-    "fs-extra": "10.0.0",
+    "eslint": "8.22.0",
+    "fs-extra": "10.1.0",
     "handlebars": "4.7.7",
     "inquirer": "8.2.0",
-    "ora": "6.0.1",
+    "ora": "6.1.2",
     "read-pkg": "7.1.0",
     "rollup-plugin-terser": "7.0.2",
-    "vite": "2.8.1",
-    "vue": "3.2.31",
-    "vue-i18n": "9.2.0-beta.30",
-    "write-pkg": "5.0.0"
+    "vite": "3.0.9",
+    "vue": "3.2.37",
+    "vue-i18n": "9.2.2",
+    "write-pkg": "5.1.0"
+  },
+  "devDependencies": {
+    "@intlify/vite-plugin-vue-i18n": "^3.4.0"
   }
 }

@@ -4,9 +4,11 @@ import { context                        } from '../context.js'
 import { normalizeConfig                } from '../config.js'
 import { dependencies   , pascalPkgName,  name } from '../pkg.js'
 
+
 const pkgFullName = name;
 
 import consola from 'consola'
+import consolaGlobalInstance from 'consola'
 
 export const getFormats = (config) => {
   const { browser, cjs, umd, ssr } = config
@@ -54,43 +56,48 @@ export const getEntry = () => {
 export const getDistBuildFileNameFunction = (config) => (format) => {
   const { DB_CJS_BUILD, DB_MJS_BUILD, DB_BROWSER_BUILD, DB_WIDGET_BUILD, DB_WIDGET_MOUNT_BUILD, DB_WIDGET_TEST_BUILD } = process.env
 
-  const { ssr, browser } = config
+  const { ssr, browser,  widget, testWidget } = config
   const   isEsFormat     = format === 'es'
   const   isMjsBuild     = isEsFormat && ssr     && DB_MJS_BUILD     || false
   const   isBrowserBuild = isEsFormat && browser && DB_BROWSER_BUILD || false
 
-  if(DB_WIDGET_BUILD)       return DB_WIDGET_TEST_BUILD? `preview/widget/index.js` : `widget/index.js`
-  if(DB_WIDGET_MOUNT_BUILD) return DB_WIDGET_TEST_BUILD? `preview/widget/mount.js` : `widget/mount.js`
+  if(widget && DB_WIDGET_BUILD)       return testWidget && DB_WIDGET_TEST_BUILD? `preview/widget/index.js` : `widget/index.js`
+  if(widget && DB_WIDGET_MOUNT_BUILD) return testWidget && DB_WIDGET_TEST_BUILD? `preview/widget/mount.js` : `widget/mount.js`
 
-  if(DB_CJS_BUILD && format === 'cjs') return isMinified(config)? `cjs/index.min.cjs` : `dev/cjs/index.cjs`
+  if(DB_CJS_BUILD && format === 'cjs') return isMinified(config)? `cjs-ex/index.min.cjs` : `cjs-ex/index.cjs`
 
-  if(isBrowserBuild) return isMinified(config)? `browser/index.min.js`           : `dev/browser/index.js`
-  if(!isMjsBuild)    return isMinified(config)? `${format}/index.min.js`         : `dev/${format}/index.js`
-  if(isMjsBuild)     return isMinified(config)? `mjs/index.min.mjs`              : `dev/mjs/index.mjs`
+  if(isBrowserBuild) return isMinified(config)? `browser/index.min.js`           : `browser/index.js`
+  if(!isMjsBuild)    return isMinified(config)? `${format}/index.min.js`         : `${format}/index.js`
+  if(isMjsBuild)     return isMinified(config)? `mjs/index.min.mjs`              : `mjs/index.mjs`
 
-  return isMinified(config)? `${format}/index.min.js` : `dev/${format}/index.js`
+  return isMinified(config)? `${format}/index.min.js` : `${format}/index.js`
 }
 
 export const getViteRollupConfig = (passedConfig) => {
-  const { DB_EMPTY_OUT_DIR, DB_WIDGET_BUILD, DB_WIDGET_MOUNT_BUILD, DB_WIDGET_TEST_BUILD } = process.env
+  const { DB_EMPTY_OUT_DIR, DB_WIDGET_BUILD, DB_WIDGET_MOUNT_BUILD, DB_WIDGET_TEST_BUILD, PREVIEW, WIDGET_PREVIEW } = process.env
 
   const config      = normalizeConfig(passedConfig)
   const minify      = isMinified(config)
-  const emptyOutDir = DB_EMPTY_OUT_DIR === 'true' || false
+  const outDir      = DB_WIDGET_TEST_BUILD || PREVIEW || WIDGET_PREVIEW?  'dist-dev':  minify? 'dist' : 'dist-dev'
+  const emptyOutDir =  false//DB_EMPTY_OUT_DIR || false
   const sourcemap   = minify && !DB_WIDGET_BUILD && !DB_WIDGET_MOUNT_BUILD
 
   const entry        = getEntry()
   const formats      = getFormats(config)
   const name         = pascalPkgName
   const fileName     = getDistBuildFileNameFunction(config)
-  const external     = getExternal(config)
+  const external     = Array.from(new Set([...(config.external||[]), pkgFullName, 'https://esm.sh/@scbd/self-embedding-component']))
   const globals      = config.globals || {}
   const optimizeDeps = { exclude:  [pkgFullName] }
 
-  
-  const define = { DB_WIDGET_BUILD, DB_WIDGET_MOUNT_BUILD, DB_WIDGET_TEST_BUILD }
+  const __VUE_I18N_FULL_INSTALL__= false
+  const __VUE_I18N_LEGACY_API__  = false
+  const __INTLIFY_PROD_DEVTOOLS__= false
 
-  return { define, globals, external, minify, emptyOutDir, sourcemap, entry, formats, name, fileName, optimizeDeps }
+  //don't think build and i18n needed in define
+  const define = { ...config.define,  DB_WIDGET_BUILD, DB_WIDGET_MOUNT_BUILD, DB_WIDGET_TEST_BUILD }
+
+  return { preview: config.preview, outDir, define, globals, external, minify, emptyOutDir, sourcemap, entry, formats, name, fileName, optimizeDeps }
 }
 
 

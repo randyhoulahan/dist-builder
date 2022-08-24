@@ -23,7 +23,7 @@ export async function buildBrowser(isDev = false, empty = false){
 }
 
 function buildDev(){
-  const env     = { ...process.env, DB_EMPTY_OUT_DIR: true }
+  const env     = { ...process.env, DB_EMPTY_OUT_DIR: false }
   const args    = []
   const options = { env, shell: true, stdio: 'inherit' }
 
@@ -40,22 +40,22 @@ function build(){
 
   buildDev()
 
-  const env     = { DB_MINIFY: true, DB_EMPTY_OUT_DIR: false, ...process.env }
-  const args    = []
-  const options = { env, shell: true, stdio: 'inherit' }
+  // const env     = { ...process.env, DB_MINIFY: true, DB_EMPTY_OUT_DIR: false }
+  // const args    = []
+  // const options = { env, shell: true, stdio: 'inherit' }
 
-  spawnSync('yarn vite build', args, options)
-  buildMjs(false)
-  buildBrowser(false)
-  buildCjsFileExt(false)
+  // spawnSync('yarn vite build', args, options)
+  // buildMjs(false)
+  // buildBrowser(false)
+  // buildCjsFileExt(false)
 
-  buildWidget()
-  buildWidgetMount()
+  // buildWidget()
+  // buildWidgetMount()
 }
 
-async function buildMjs(isDev = false){
+function buildMjs(isDev = false){
   const DB_MINIFY =  !isDev
-  const env       = { DB_EMPTY_OUT_DIR: false, DB_MJS_BUILD: true, ...process.env }
+  const env       = { ...process.env, DB_EMPTY_OUT_DIR: false, DB_MJS_BUILD: true }
 
   if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
 
@@ -67,7 +67,7 @@ async function buildMjs(isDev = false){
 
 
 
-async function buildCjsFileExt(isDev = false){
+function buildCjsFileExt(isDev = false){
   const DB_MINIFY =  !isDev
   const env       = {...process.env,  DB_EMPTY_OUT_DIR: false, DB_CJS_BUILD: true }
 
@@ -81,7 +81,7 @@ async function buildCjsFileExt(isDev = false){
 
 
 
-async function buildWidget(){
+function buildWidget(){
   const DB_ENTRY  = 'src/widget.js'
   const env       = { ...process.env,DB_ENTRY, DB_WIDGET_BUILD: true, DB_MINIFY: false, DB_EMPTY_OUT_DIR: false,  DB_BROWSER_BUILD: true }
 
@@ -91,7 +91,7 @@ async function buildWidget(){
   spawnSync('yarn vite build', args, options)
 }
 
-async function buildWidgetMount(){
+function buildWidgetMount(){
   const DB_ENTRY  = 'src/widget-mount.js'
   const env       = { ...process.env, DB_ENTRY, DB_WIDGET_MOUNT_BUILD: true, DB_MINIFY: false, DB_EMPTY_OUT_DIR: false }
 

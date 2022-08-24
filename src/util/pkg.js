@@ -40,8 +40,8 @@ export const isVueComponent = fs.existsSync(path.resolve(context, 'src/index.vue
 export const fileNamePreFix = isVueComponent? pascalPkgName : pkgName
 export const isModule       = type === 'module'
 export const cdn            = pkg.cdn
-export const external       = Object.keys(pkg.dependencies)
-export const dependencies   = pkg.dependencies
+export const external       = Object.keys(pkg?.dependencies || {})
+export const dependencies   = pkg.dependencies || {}
 
 export const getPackageVersion = (name) => {
   if(!dependencies[name]) throw new Error(`dist-builder.getPackageVersion: NPM dependency not found: ${name}`)
