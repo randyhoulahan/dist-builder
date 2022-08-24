@@ -1,6 +1,7 @@
 {
   "name": "@scbd/dist-builder",
   "version": "0.0.3-beta",
+  "private": "true",
   "type": "module",
   "homepage": "https://github.com/scbd/dist-builder/tree/master#readme",
   "readme": "https://github.com/scbd/dist-builder/tree/master#readme",
