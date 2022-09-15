@@ -14,10 +14,9 @@ export default async (isForkedProcess = true) => {
 }
 
 export async function buildTestWidget(){
-console.log(process.env)
   if(process.env.NO_DB_WIDGET_TEST_BUILD) return
   const DB_ENTRY  = 'src/widget.js'
-  const env       = { ...process.env,DB_ENTRY, DB_WIDGET_TEST_BUILD: true, DB_WIDGET_BUILD: true, DB_MINIFY: false, DB_EMPTY_OUT_DIR: false,  DB_BROWSER_BUILD: true }
+  const env       = { ...process.env,DB_ENTRY, DB_WIDGET_TEST_BUILD: true, DB_WIDGET_BUILD: true, DB_MINIFY: false, DB_EMPTY_OUT_DIR: false,  DB_BROWSER_BUILD: true, DB_FORMAT: 'es', DB_BUILD: 'testWidget' }
 
   const args      = []
   const options   = { env, shell: true, stdio: 'inherit' }
@@ -28,7 +27,7 @@ console.log(process.env)
 export async function buildTestWidgetMount(){
   if(process.env.NO_DB_WIDGET_TEST_BUILD) return
   const DB_ENTRY  = 'src/widget-mount.js'
-  const env       = { ...process.env, DB_ENTRY, DB_WIDGET_TEST_BUILD: true, DB_WIDGET_MOUNT_BUILD: true, DB_MINIFY: false, DB_EMPTY_OUT_DIR: false }
+  const env       = { ...process.env, DB_ENTRY, DB_WIDGET_TEST_BUILD: true, DB_WIDGET_MOUNT_BUILD: true, DB_MINIFY: false, DB_EMPTY_OUT_DIR: false, DB_FORMAT: 'es', DB_BUILD: 'testWidgetMount' }
 
   const args      = []
   const options   = { env, shell: true, stdio: 'inherit' }
