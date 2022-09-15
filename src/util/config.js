@@ -35,7 +35,7 @@ export const normalizeConfig = (passedConfig) => {
 
   if(Object.keys(config).length) return config
 
-  const { external, globals, imports, minify, modern, legacy, widget, testWidget, clean = true, browserEsmPackages = {}, cdnUrl = 'https://cdn.cbd.int', debug = true } = passedConfig || {}
+  const { preview, external, globals, imports, minify, modern, legacy, widget, testWidget, clean = true, browserEsmPackages = {}, cdnUrl = 'https://cdn.cbd.int', debug = true } = passedConfig || {}
 
   const { cjs    , umd } = legacy       || {}
   const { browser, ssr } = modern       || {}
@@ -43,7 +43,7 @@ export const normalizeConfig = (passedConfig) => {
   const hasLegacyBuilds  = cjs          || umd
   const hasAllBuilds     = hasEsmBuilds && hasLegacyBuilds
 
-  const allConfig = { external, globals, imports, minify, modern, ssr, browser, legacy, clean, cjs, umd, hasEsmBuilds, hasLegacyBuilds, hasAllBuilds, widget, testWidget, browserEsmPackages, cdnUrl, debug }
+  const allConfig = { preview,external, globals, imports, minify, modern, ssr, browser, legacy, clean, cjs, umd, hasEsmBuilds, hasLegacyBuilds, hasAllBuilds, widget, testWidget, browserEsmPackages, cdnUrl, debug }
 
   for (const key in allConfig)
     config[key] = allConfig[key]

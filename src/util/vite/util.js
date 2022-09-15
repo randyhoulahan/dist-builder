@@ -98,12 +98,13 @@ export const getViteRollupConfig = (passedConfig) => {
 
   const config      = normalizeConfig(passedConfig)
 
+  const preview = getPreview(config.preview)
   exitIfNotInConfig(config)
 
   const minify      = isMinified(config)
 
   const outDir      = getDistDir(config)(DB_FORMAT)//DB_WIDGET_TEST_BUILD || PREVIEW || WIDGET_PREVIEW?  'dist-dev':  minify? 'dist' : 'dist-dev'
-  const emptyOutDir =  DB_EMPTY_OUT_DIR || false
+  const emptyOutDir =  DB_EMPTY_OUT_DIR === 'false' || !DB_EMPTY_OUT_DIR? false : true
   const sourcemap   = minify && !DB_WIDGET_BUILD && !DB_WIDGET_MOUNT_BUILD
 
   const entry        = getEntry()
@@ -122,7 +123,7 @@ export const getViteRollupConfig = (passedConfig) => {
   //don't think build and i18n needed in define
   const define = { ...config.define,  DB_WIDGET_BUILD, DB_WIDGET_MOUNT_BUILD, DB_WIDGET_TEST_BUILD }
 
-  return { preview: config.preview, outDir, define, globals, external, minify, emptyOutDir, sourcemap, entry, formats, name, fileName, optimizeDeps }
+  return { preview , outDir, define, globals, external, minify, emptyOutDir, sourcemap, entry, formats, name, fileName, optimizeDeps }
 }
 
 function exitIfNotInConfig(config){
@@ -151,4 +152,22 @@ function getExternal(config){
   if(isBrowserBuild) return [ ...Object.keys(imports), pkgFullName ]
 
   return [...Object.keys(dependencies), pkgFullName]
+}
+
+
+const previewDefault = {
+  cors      : false,
+  port      : 5000,
+  strictPort: true,
+  widgetOpen: '/preview/widget/index.html',
+  open      : '/preview/index.html'
+}
+
+function getPreview(preview){
+  const { port, cors, strictPort, open:openBuild, widgetOpen} = preview || previewDefault
+  const { WIDGET_PREVIEW } = process.env
+
+  const open =  WIDGET_PREVIEW? widgetOpen : openBuild
+
+  return { port, cors, strictPort, open}
 }

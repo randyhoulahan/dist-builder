@@ -13,7 +13,7 @@ const config = (config) => {
   return defineConfig({
     optimizeDeps, define, 
     logLevel : 'info',
-    preview: getPreview(preview),
+    preview,
     plugins  : [ vue() ],
     css      : { postcss },
     resolve: {
@@ -45,13 +45,3 @@ const config = (config) => {
 export const viteConfig = config
 export default viteConfig
 
-const { WIDGET_PREVIEW } = process.env
-const preview = {
-  cors      : false,
-  port      : 5000,
-  strictPort: true,
-  open      : WIDGET_PREVIEW? '/preview/widget/index.html' : '/preview/index.html'
-}
-function getPreview({ port, cors, strictPort, open} = preview){
-  return { port, cors, strictPort, open}
-}
