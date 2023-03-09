@@ -1,81 +1,47 @@
 import { spawnSync                             } from 'child_process'
 import { notifyDone     , runTaskAndNotify     } from '../util/index.js'
 import { buildTestWidget, buildTestWidgetMount } from './build-test-widget.js'
+import { makeMap } from './import-maps.js'
+import consola from 'consola'
 
 export default async (isForkedProcess = true) => {
   const run = runTaskAndNotify(isForkedProcess)
 
-  await run(build, 'Building distribution')
+  await run(buildProd, 'Building distribution')
 
   notifyDone(isForkedProcess)()
 }
 
-export async function buildBrowser(isDev = false, empty = false){
-  const DB_MINIFY =  !isDev
-  const env       = { ...process.env, DB_EMPTY_OUT_DIR: empty, DB_BROWSER_BUILD: true, DB_FORMAT: 'es', DB_BUILD: 'browser' }
+// export async function buildBrowser(isDev = false, empty = false){
+//   const DB_MINIFY =  !isDev
+//   const env       = { ...process.env, DB_EMPTY_OUT_DIR: empty, DB_BROWSER_BUILD: true, DB_FORMAT: 'es', DB_BUILD: 'browser' }
 
-  if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
+//   if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
 
-  const args      = []
-  const options = { env, shell: true, stdio: 'inherit' }
+//   const args    = []
+//   const options = { env, shell: true, stdio: 'inherit' }
 
-  spawnSync('yarn vite build',args, options)
-}
+//   spawnSync('yarn vite build',args, options)
+// }
 
 function buildDev(){
-  buildEs(true)
-  buildCjs(true)
-  buildUmd(true)
-  buildMjs(true)
-  buildBrowser(true)
-  buildCjsFileExt(true)
-
+  build(true)
   buildTestWidget()
   buildTestWidgetMount()
 }
 
-function build(){
-
+async function buildProd(){
   buildDev()
-
-  buildEs()
-  buildCjs()
-  buildUmd()
-  buildMjs()
-  buildBrowser()
-  buildCjsFileExt()
-
+  build()
   buildWidget()
   buildWidgetMount()
+  await makeMap()
 }
 
-function buildEs(isDev = false){
-  const DB_MINIFY =  !isDev
-  const env       = { ...process.env, DB_EMPTY_OUT_DIR: true, DB_FORMAT: 'es', DB_BUILD: 'ssr'}
-
-  if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
-
-  const args    = []
-  const options = { env, shell: true, stdio: 'inherit' }
-
-  spawnSync('yarn vite build', args, options)
-}
-
-function buildCjs(isDev = false){
-  const DB_MINIFY =  !isDev
-  const env       = { ...process.env, DB_EMPTY_OUT_DIR: true, DB_FORMAT: 'cjs', DB_BUILD: 'cjs' }
-
-  if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
-
-  const args    = []
-  const options = { env, shell: true, stdio: 'inherit' }
-
-  spawnSync('yarn vite build', args, options)
-}
-
-function buildUmd(isDev = false){
-  const DB_MINIFY =  !isDev
-  const env       = { ...process.env, DB_EMPTY_OUT_DIR: true, DB_FORMAT: 'umd', DB_BUILD: 'umd' }
+export function build(isDev = false){
+  const DB_MINIFY       = !isDev
+  const COPY_PUBLIC_DIR = isDev
+  const env       = { ...process.env, COPY_PUBLIC_DIR, DB_EMPTY_OUT_DIR: true, DB_FORMAT: 'es', DB_BUILD: 'ssr'}
 
   if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
 
@@ -96,22 +62,6 @@ function buildMjs(isDev = false){
 
   spawnSync('yarn vite build', args, options)
 }
-
-
-
-function buildCjsFileExt(isDev = false){
-  const DB_MINIFY =  !isDev
-  const env       = {...process.env,  DB_EMPTY_OUT_DIR: false, DB_CJS_BUILD: true, DB_FORMAT: 'cjs', DB_BUILD: 'cjsExt' }
-
-  if(DB_MINIFY) env.DB_MINIFY = DB_MINIFY
-
-  const args      = []
-  const options   = { env, shell: true, stdio: 'inherit' }
-
-  spawnSync('yarn vite build',args, options)
-}
-
-
 
 function buildWidget(){
   const DB_ENTRY  = 'src/widget.js'

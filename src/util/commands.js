@@ -1,5 +1,5 @@
 import changeCase from 'change-case'
-const  commands   = [ 'build', 'buildPreview', 'buildTestWidget', 'applyPkgDefaults' ] 
+const  commands   = [ 'build','importMaps', 'buildTestWidget', 'applyPkgDefaults', 'releaseDev' ] 
 
 
 export const getAllUserArgs = () => {
@@ -13,7 +13,7 @@ export const getAllUserArgs = () => {
 export function getCommand({ paramCase } = { paramCase:false }){
 
   const hasTraceWarningsArg = process.argv.includes('--trace-warnings')
-  const startIndex          = hasTraceWarningsArg? 3 : 2
+  const startIndex          = hasTraceWarningsArg       ? 3 : 2
   const theCommandOne       = process.argv[startIndex]  ? changeCase.camelCase(process.argv[ startIndex ])   : ''
   const theCommandTwo       = process.argv[startIndex+1]? changeCase.camelCase(process.argv[ startIndex+1 ]) : ''
 
